@@ -2,29 +2,27 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 
-def index(request):
-    # proper method
-    # template = loader.get_template("test_site/index.html")
-    # context = {}
-    # return HttpResponse(template.render(context, request))
-    
-    # shortcut method:
-    return render(request, "test_site/index.html", context={})
+def login(request, err_msg=''):
+    return render(request, "test_site/login.html", context={"err_msg": err_msg})
 
 def home(request):
+    print(request.GET)
     auth = False
-    username = 'admin' #request.GET.get('uname','')
-    password = 'admin' #request.POST.get('psw','')
-    if username == 'admin' and password == 'admin':
+    email = 'be07724@st.habib.edu.pk'
+    username = request.GET.get('uname')
+    password = request.POST.get('psw')
+    print(username,password)
+    if username == 'admin': #and password == 'admin':
         auth = True
-    if auth:
-        return render(request, "test_site/home.html", context={})
+    if auth == True:
+        return render(request, "test_site/home.html", context={"username": username, "email": email})
     else:
-        return request
-    
+        return redirect('login')
+    # return HttpResponseRedirect(reverse('login', args=("Login Failed",)))    
 
 def insights(request):
     return HttpResponse('This is the insights page')
